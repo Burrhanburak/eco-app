@@ -52,12 +52,10 @@ class UserDetailResource extends Resource
                             ->schema([
                                 Forms\Components\TextInput::make('city')
                                     ->label('City')
-                                    ->unique()
                                     ->required(),
                                 Forms\Components\TextInput::make('zipcode')
                                     ->label('Zipcode')
                                     ->unique()
-                                    ->length(8)
                                     ->required(),
                                 Forms\Components\TextInput::make('phone')
                                     ->tel()

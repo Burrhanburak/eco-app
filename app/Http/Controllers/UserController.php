@@ -26,4 +26,28 @@ class UserController extends Controller
 
         return redirect('/');
     }
+
+    public function edit()
+    {
+        $id = Auth::user()->id;
+        $user = User::find($id);
+        return view('dashboard', compact('user'));
+    }
+
+    public function update(Request $request)
+    {
+        $id = Auth::user()->id;
+        $user = User::find($id);
+        $user->update($request->all());
+        return redirect()->route('dashboard');
+    }
+
+    public function destroy()
+    {
+        $id = Auth::user()->id;
+        $user = User::find($id);
+        $user->delete();
+        return redirect()->route('dashboard');
+    }
+
 }

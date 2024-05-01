@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
+use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\CartDetail;
@@ -87,5 +89,12 @@ class CartController extends Controller
         } catch (\Exception $e) {
             dd($e->getMessage());
         }
+    }
+
+    public function orders(): View
+    {
+
+        $orders = OrderDetail::with('product')->get();
+        return view("frontend.cart.orders", ["orders" => $orders]);
     }
 }

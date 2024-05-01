@@ -70,6 +70,9 @@
                                 <a class="dropdown-item" href="{{ route('dashboard') }}">
                                     User {{ __('dashboard') }}
                                 </a>
+                                <a class="dropdown-item" href="{{ route('orders') }}">
+                                    Order {{ __('orders') }}
+                                </a>
 
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                     @csrf

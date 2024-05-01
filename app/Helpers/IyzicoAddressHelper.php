@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\UserDetail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Iyzipay\Model\Address;
 
 class IyzicoAddressHelper
@@ -13,22 +14,19 @@ class IyzicoAddressHelper
      */
     public static function getAddress(): Address
     {
-//        $user = Auth::user();
-//        $details = UserDetail::where('user_id', $user->id)->first();
-//
-//        $address = new Address();
-//        $address->setContactName(($details->id ?? '') . ' ' . ($details->name ?? ''));
-//        $address->setCity(($details->city ?? 'Default City'));
-//        $address->setCountry(($details->country ?? 'Default Country'));
-//        $address->setAddress(($details->address ?? 'Default Address'));
-//        $address->setZipCode(($details->zipcode ?? 'Default Zipcode'));
-//        return $address;
-        $address = new Address();
-        $address->setContactName("John Doe");
-        $address->setCity("Istanbul");
-        $address->setCountry("Turkey");
-        $address->setAddress("Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1");
-        $address->setZipCode("34742");
-        return $address;
-    }
+        $user = Auth::user();
+        $detailName = Auth::user()->detail->name;
+        $detailAdress = Auth::user()->detail->address;
+        $detailCity = Auth::user()->detail->city;
+        $detailCoutnry = Auth::user()->detail->country;
+        $detailZipCode = Auth::user()->detail->zipcode;
+
+                $address = new Address();
+                $address->setContactName( $detailName ?? 'john');
+                $address->setCity($detailCity ?? 'istanbul');
+                $address->setCountry($detailCoutnry ?? 'turkey');
+                $address->setAddress($detailAdress ?? 'default address');
+                $address->setZipCode($detailZipCode ?? '34000');
+                return $address;
+            }
 }

@@ -2,9 +2,12 @@
 
 namespace App\Helpers;
 
+use App\Models\CreditCard;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Iyzipay\Model\Buyer;
+use Illuminate\Support\Facades\Log;
 use App\Models\UserDetail;
 
 class IyzicoBuyerHelper
@@ -12,31 +15,28 @@ class IyzicoBuyerHelper
     public static function getBuyer(): Buyer
     {
         $user = Auth::user();
-        $details = UserDetail::where('user_id', $user->id)->first();
+        if (!$user) {
+            // Handle unauthenticated user here
+            // For example, throw an exception or return a default Buyer
+            throw new \Exception('User not authenticated');
+        }
+
+        $detailNumbber = Auth::user()->detail->phone;
+        $detailAdress = Auth::user()->detail->address;
+        $detailCity = Auth::user()->detail->city;
+        $detailCoutnry = Auth::user()->detail->country;
+        $detailZipCode = Auth::user()->detail->zipcode;
+
 
         $buyer = new Buyer();
         $buyer->setId($user->id);
-
-        if ($details) {
-            $buyer->setName($details->name);
-            $buyer->setSurname($details->name); // Assuming you have a 'surname' field in your user details
-            $buyer->setGsmNumber($details->phone);
-            $buyer->setRegistrationAddress($details->address);
-            $buyer->setCity($details->city);
-            $buyer->setCountry($details->country);
-            $buyer->setZipCode($details->zipcode);
-        } else {
-            // Handle the case when details are not found, set default values or throw an error.
-            // For now, let's set some default values.
-            $buyer->setName("John");
-            $buyer->setSurname("Doe");
-            $buyer->setGsmNumber("+905350000000");
-            $buyer->setRegistrationAddress("Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1");
-            $buyer->setCity("Istanbul");
-            $buyer->setCountry("Turkey");
-            $buyer->setZipCode("34732");
-        }
-
+        $buyer->setName($user->name);
+        $buyer->setSurname($user->name);
+        $buyer->setGsmNumber($detailNumbber);
+        $buyer->setRegistrationAddress($detailAdress );
+        $buyer->setCity($detailCity);
+        $buyer->setCountry($detailCoutnry ? $detailCoutnry : "Turkey");
+        $buyer->setZipCode($detailZipCode);
         $buyer->setEmail($user->email);
         $buyer->setIdentityNumber("74300864791");
         $buyer->setLastLoginDate(Carbon::parse(now())->format("Y-m-d h:i:s"));
