@@ -19,8 +19,10 @@ use App\Models\UserDetail;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
+use App\Mail\OrderMail;
 use Iyzipay\Model\BasketItem;
 use Iyzipay\Model\BasketItemType;
 use Iyzipay\Model\Payment;
@@ -158,10 +160,27 @@ class CheckoutController extends Controller
                     $this->finalizeCart($cart);
                     Log::info('Cart finalized successfully.');
 
+//                    // Start Send Email
+//                    // Alıcı e-posta adresi
+//                    $email = $order->user->email;
+//
+//// Sipariş ve fatura bilgileri
+//                    $orderData = [
+//                        'order_id' => $order->order_id,
+//                        // Diğer gerekli bilgiler buraya eklenebilir
+//                    ];
+//
+//// E-posta gönderimi için verileri bir diziye aktar
+//                    $data = [
+//                        'order' => $orderData,
+//                    ];
+//                    Mail::to($email)->send(new OrderMail($data));
+//                    Log::info('E-posta gönderildi', ['email' => $email, 'order_id' => $order->order_id]);
+
                     return view("frontend.checkout.success", ["order" => $order]);
                 } catch (\Exception $e) {
-                    Log::error('Error in success block: ' . $e->getMessage());
-                    return redirect()->route('payment.failure')->with('error', 'An error occurred while processing the payment.');
+                    $errorMessage = $threedsPayment->getErrorMessage();
+                    return view("frontend.checkout.error", ["message" => $errorMessage]);
                 }
             } else {
                 // Payment failed, handle the failure scenario
@@ -173,8 +192,9 @@ class CheckoutController extends Controller
             // Log any unexpected errors
             Log::error('Error in iyzico callback: ' . $e->getMessage());
 
+                $errorMessage = $threedsPayment->getErrorMessage();
+                return view("frontend.checkout.error", ["message" => $errorMessage]);
             // Redirect the user to a failure page or return an error response
-            return redirect()->route('payment.failure')->with('error', 'An unexpected error occurred');
         }
     }
 

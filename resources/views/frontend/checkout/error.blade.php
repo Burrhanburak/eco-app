@@ -11,6 +11,7 @@
                     <p>Ödeme işlemi esnasında bir hata ile karşılaşıldı.</p>
                     <p>Lütfen girdiğiniz bilgileri ve kart limitinizi kontrol ediniz.</p>
                     <p><strong>Hata:</strong> <span class="text-black">{{$message}}</span></p>
+                    <a href="{{route('frontend.index')}}" class="btn btn-primary">Ana sayfasına dönün</a>
                 </main>
             </div>
         </div>
